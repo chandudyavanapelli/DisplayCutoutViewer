@@ -34,13 +34,11 @@ class PathView @JvmOverloads constructor(
             invalidate()
         }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        canvas?.apply {
-            path?.let {
-                drawPath(it, paint)
-            }
+        path?.let {
+            canvas.drawPath(it, paint)
         }
     }
 

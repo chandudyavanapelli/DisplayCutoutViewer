@@ -1,16 +1,15 @@
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
+    alias(libs.plugins.android.application)
 }
 
 android {
     namespace = "dev.sebaubuntu.displaycutoutviewer"
-    compileSdk = 33
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "dev.sebaubuntu.displaycutoutviewer"
         minSdk = 29
-        targetSdk = 33
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
     }
@@ -34,18 +33,14 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.material)
 }
