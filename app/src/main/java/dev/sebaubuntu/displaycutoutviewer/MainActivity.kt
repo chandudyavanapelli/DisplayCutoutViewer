@@ -9,6 +9,7 @@ import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -44,10 +45,14 @@ class MainActivity : AppCompatActivity() {
 
             val physicalDisplayWidth = pathView.width
             val physicalDisplayHeight = pathView.height
-            val density = resources.displayMetrics.density
+
+            // Like the framework, the cutout is specified for the stable (largest) display mode
+            // and @dp values use the stable density, then everything is scaled to the current mode
+            val density = DisplayMetrics.DENSITY_DEVICE_STABLE / DisplayMetrics.DENSITY_DEFAULT.toFloat()
 
             val path = CutoutSpecification.Parser(
-                density, physicalDisplayWidth, physicalDisplayHeight, 1f
+                density, physicalDisplayWidth, physicalDisplayHeight,
+                getPhysicalPixelDisplaySizeRatio()
             ).parse(pathData).path ?: run {
                 Toast.makeText(this, R.string.invalid_path, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -68,6 +73,19 @@ class MainActivity : AppCompatActivity() {
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         // Hide the status bar
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+    }
+
+    private fun getPhysicalPixelDisplaySizeRatio(): Float {
+        val display = display ?: return 1f
+        val mode = display.mode
+        val stableMode = display.supportedModes.maxByOrNull {
+            it.physicalWidth * it.physicalHeight
+        } ?: return 1f
+
+        val currentWidth = minOf(mode.physicalWidth, mode.physicalHeight)
+        val stableWidth = minOf(stableMode.physicalWidth, stableMode.physicalHeight)
+
+        return currentWidth.toFloat() / stableWidth
     }
 
     @SuppressLint("DiscouragedApi")
